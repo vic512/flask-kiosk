@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Directory where images are stored
-IMAGE_DIRECTORY = '/home/ladmin/flaskkiosk/images'  # Update this to your image directory path
+IMAGE_DIRECTORY = '/path/to/your/images'  # Update this to your image directory path
 
 # Path to the settings file
 SETTINGS_FILE = 'settings.txt'
