@@ -32,7 +32,7 @@
             transform: translate(-50%, -50%);
         }
         .visible {
-            opacity: 1;
+            opacity: 1 !important;
         }
     </style>
 </head>
@@ -80,18 +80,34 @@
         async function refreshImages() {
             try {
                 const response = await fetch('/images');
-                const text = await response.text();
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = text;
+                const imageList = await response.json();
 
-                const newImages = Array.from(tempDiv.querySelectorAll('img'));
                 const gallery = document.getElementById('gallery');
+                
+                // Debugging: Log fetched images
+                console.log('Fetched images:', imageList);
 
-                gallery.innerHTML = ''; // Clear the existing images
-                newImages.forEach(img => gallery.appendChild(img));
+                // Clear the existing images
+                gallery.innerHTML = '';
 
-                images = newImages;
+                // Append new images
+                imageList.forEach(filename => {
+                    const img = document.createElement('img');
+                    img.src = `/image/${filename}`;
+                    img.alt = "Image";
+                    img.style.opacity = 0;
+                    img.style.transition = 'opacity 1s ease-in-out';
+                    img.style.position = 'absolute';
+                    img.style.top = '50%';
+                    img.style.left = '50%';
+                    img.style.transform = 'translate(-50%, -50%)';
+                    gallery.appendChild(img);
+                });
+
+                images = Array.from(document.querySelectorAll('#gallery img'));
                 shuffleArray(images);
+
+                // Reset currentIndex to prevent out-of-bound errors
                 currentIndex = 0;
                 showImage(currentIndex);
             } catch (error) {
@@ -133,7 +149,7 @@
         refreshIntervalId = setInterval(refreshImages, refreshInterval);
 
         // Update settings every 30 seconds
-        setInterval(updateSettings, 10000);
+        setInterval(updateSettings, 30000);
     </script>
 </body>
 </html>
