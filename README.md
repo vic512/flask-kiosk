@@ -20,3 +20,6 @@ There are two settings on the upload URL page that can adjust the timings of the
 
 - **Image Change Interval (seconds):** This sets the duration each image is displayed.
 - **Gallery Refresh Interval (seconds):** This sets the interval at which the system refreshes the image list for displaying, so you do not have to refresh the browser to see the new images.
+
+
+[Docker Version](https://hub.docker.com/r/cross512/flask-kiosk)
