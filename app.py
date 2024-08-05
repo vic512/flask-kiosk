@@ -1,4 +1,5 @@
 import os
+import time
 from flask import Flask, request, send_from_directory, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 
@@ -47,7 +48,13 @@ def upload_image():
             # If the user does not select a file, the browser submits an empty file without a filename
             if file.filename != '' and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(IMAGE_DIRECTORY, filename))
+
+                # Create a unique filename by appending a timestamp
+                name, ext = os.path.splitext(filename)
+                timestamp = int(time.time())
+                unique_filename = f"{name}_{timestamp}{ext}"
+
+                file.save(os.path.join(IMAGE_DIRECTORY, unique_filename))
         
         # Handle settings update
         if 'nextImage' in request.form and 'refreshImages' in request.form:
@@ -90,4 +97,4 @@ def index():
     return render_template('gallery.html', images=images, settings=settings)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4488)
+    app.run(debug=True, host='0.0.0.0', port=4444)
