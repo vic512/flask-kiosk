@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Directory where images are stored
-IMAGE_DIRECTORY = '/path/to/your/images'  # Update this to your image directory path
+IMAGE_DIRECTORY = '/home/ladmin/flaskkiosk/images'  # Update this to your image directory path
 
 # Path to the settings file
 SETTINGS_FILE = 'settings.txt'
@@ -71,11 +71,10 @@ def delete_image(filename):
     return redirect(url_for('upload_image'))
 
 @app.route('/images', methods=['GET'])
-def display_images():
+def get_images():
     # List all images in the directory
     images = [img for img in os.listdir(IMAGE_DIRECTORY) if img.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    settings = read_settings()
-    return render_template('gallery.html', images=images, settings=settings)
+    return jsonify(images)
 
 @app.route('/settings', methods=['GET'])
 def get_settings():
@@ -85,10 +84,10 @@ def get_settings():
 
 @app.route('/')
 def index():
-    # Redirect to the gallery view by rendering gallery.html
+    # Render the gallery view with current images and settings
     images = [img for img in os.listdir(IMAGE_DIRECTORY) if img.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     settings = read_settings()
     return render_template('gallery.html', images=images, settings=settings)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4444)
+    app.run(debug=True, host='0.0.0.0', port=4488)
