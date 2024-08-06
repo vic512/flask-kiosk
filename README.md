@@ -1,6 +1,6 @@
 # flask-kiosk
 
-A simple Python/Flask/Javascript web host image kiosk.
+A simple Python/Flask/Pillow/Javascript web host image kiosk.
 
 There aren't a lot of simple self-hosted options for digital frames, so I came up with this. Minimal functionality, singular in purpose. This allows you to upload images to a folder and then view them on a rotation similar to digital frames.
 
