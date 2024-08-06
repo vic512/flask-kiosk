@@ -2,6 +2,7 @@ import os
 import time
 from flask import Flask, request, send_from_directory, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def allowed_file(filename):
 
 # Read settings from the settings file
 def read_settings():
-    settings = {'nextImage': 30, 'refreshImages': 60}  # Default values
+    settings = {'nextImage': 30, 'refreshImages': 60, 'imageWidth': 800, 'imageHeight': 600}  # Default values
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, 'r') as f:
             lines = f.readlines()
@@ -30,10 +31,12 @@ def read_settings():
     return settings
 
 # Write settings to the settings file
-def write_settings(next_image, refresh_images):
+def write_settings(next_image, refresh_images, image_width, image_height):
     with open(SETTINGS_FILE, 'w') as f:
         f.write(f"nextImage={next_image}\n")
         f.write(f"refreshImages={refresh_images}\n")
+        f.write(f"imageWidth={image_width}\n")
+        f.write(f"imageHeight={image_height}\n")
 
 @app.route('/image/<filename>')
 def get_image(filename):
@@ -41,6 +44,7 @@ def get_image(filename):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_image():
+    settings = read_settings()
     if request.method == 'POST':
         # Check if the post request has the file part
         if 'file' in request.files:
@@ -54,19 +58,40 @@ def upload_image():
                 timestamp = int(time.time())
                 unique_filename = f"{name}_{timestamp}{ext}"
 
-                file.save(os.path.join(IMAGE_DIRECTORY, unique_filename))
-        
+                # Save the file temporarily to resize it
+                temp_path = os.path.join(IMAGE_DIRECTORY, unique_filename)
+                file.save(temp_path)
+
+                # Open and resize the image while maintaining aspect ratio
+                with Image.open(temp_path) as img:
+                    original_width, original_height = img.size
+                    target_width, target_height = settings['imageWidth'], settings['imageHeight']
+
+                    # Calculate new dimensions to maintain aspect ratio
+                    aspect_ratio = original_width / original_height
+
+                    if (target_width / target_height) > aspect_ratio:
+                        new_height = target_height
+                        new_width = int(new_height * aspect_ratio)
+                    else:
+                        new_width = target_width
+                        new_height = int(new_width / aspect_ratio)
+
+                    img = img.resize((new_width, new_height), Image.LANCZOS)
+                    img.save(temp_path)
+
         # Handle settings update
-        if 'nextImage' in request.form and 'refreshImages' in request.form:
+        if all(k in request.form for k in ['nextImage', 'refreshImages', 'imageWidth', 'imageHeight']):
             next_image = request.form.get('nextImage', type=int)
             refresh_images = request.form.get('refreshImages', type=int)
-            write_settings(next_image, refresh_images)
+            image_width = request.form.get('imageWidth', type=int)
+            image_height = request.form.get('imageHeight', type=int)
+            write_settings(next_image, refresh_images, image_width, image_height)
         
         return redirect(url_for('upload_image'))
 
     # List all images in the directory
     images = [img for img in os.listdir(IMAGE_DIRECTORY) if img.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    settings = read_settings()
     return render_template('upload.html', images=images, settings=settings)
 
 @app.route('/delete/<filename>', methods=['POST'])
