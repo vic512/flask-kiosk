@@ -7,11 +7,17 @@ There aren't a lot of simple self-hosted options for digital frames, so I came u
 ## Usage
 
 The default port is `4444`.
+
 Requires Flask and Pillow modules to be installed.
+
   pip install -r requirements.txt
+  
   -- or --
+  
   pip install Flask
+  
   pip install Pillow
+  
 
 - To view the rotating images, navigate to `http://[your server's IP]:4444/` or `http://[your server's IP]:4444/gallery/`.
 
