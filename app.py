@@ -7,7 +7,7 @@ from PIL import Image
 app = Flask(__name__)
 
 # Directory where images are stored
-IMAGE_DIRECTORY = '/path/to/your/images'  # Update this to your image directory path
+IMAGE_DIRECTORY = '/app/images'  # Update this to your image directory path
 
 # Path to the settings file
 SETTINGS_FILE = 'settings.txt'
@@ -21,7 +21,7 @@ def allowed_file(filename):
 
 # Read settings from the settings file
 def read_settings():
-    settings = {'nextImage': 30, 'refreshImages': 60, 'imageWidth': 800, 'imageHeight': 600}  # Default values
+    settings = {'nextImage': 30, 'refreshImages': 60, 'imageWidth': 800, 'imageHeight': 600, 'rotateImages': 0}  # Default values
     if os.path.exists(SETTINGS_FILE):
         with open(SETTINGS_FILE, 'r') as f:
             lines = f.readlines()
@@ -31,12 +31,13 @@ def read_settings():
     return settings
 
 # Write settings to the settings file
-def write_settings(next_image, refresh_images, image_width, image_height):
+def write_settings(next_image, refresh_images, image_width, image_height, rotate_images):
     with open(SETTINGS_FILE, 'w') as f:
         f.write(f"nextImage={next_image}\n")
         f.write(f"refreshImages={refresh_images}\n")
         f.write(f"imageWidth={image_width}\n")
         f.write(f"imageHeight={image_height}\n")
+        f.write(f"rotateImages={rotate_images}\n")
 
 @app.route('/image/<filename>')
 def get_image(filename):
@@ -69,7 +70,6 @@ def upload_image():
 
                     # Calculate new dimensions to maintain aspect ratio
                     aspect_ratio = original_width / original_height
-
                     if (target_width / target_height) > aspect_ratio:
                         new_height = target_height
                         new_width = int(new_height * aspect_ratio)
@@ -81,12 +81,13 @@ def upload_image():
                     img.save(temp_path)
 
         # Handle settings update
-        if all(k in request.form for k in ['nextImage', 'refreshImages', 'imageWidth', 'imageHeight']):
+        if all(k in request.form for k in ['nextImage', 'refreshImages', 'imageWidth', 'imageHeight', 'rotateImages']):
             next_image = request.form.get('nextImage', type=int)
             refresh_images = request.form.get('refreshImages', type=int)
             image_width = request.form.get('imageWidth', type=int)
             image_height = request.form.get('imageHeight', type=int)
-            write_settings(next_image, refresh_images, image_width, image_height)
+            rotate_images = request.form.get('rotateImages', type=int)
+            write_settings(next_image, refresh_images, image_width, image_height, rotate_images)
         
         return redirect(url_for('upload_image'))
 
