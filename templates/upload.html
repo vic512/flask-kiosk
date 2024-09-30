@@ -19,7 +19,8 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         input[type="file"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             margin-bottom: 10px;
             width: calc(100% - 22px); /* Full width with padding */
         }
@@ -89,6 +90,14 @@
         <br>
         <label for="imageHeight">Image Height (pixels):</label>
         <input type="number" id="imageHeight" name="imageHeight" min="1" value="{{ settings['imageHeight'] }}">
+        <br>
+        <label for="rotateImages">Rotate Images (degrees):</label>
+        <select id="rotateImages" name="rotateImages">
+            <option value="0" {% if settings['rotateImages'] == 0 %}selected{% endif %}>0</option>
+            <option value="90" {% if settings['rotateImages'] == 90 %}selected{% endif %}>90</option>
+            <option value="180" {% if settings['rotateImages'] == 180 %}selected{% endif %}>180</option>
+            <option value="270" {% if settings['rotateImages'] == 270 %}selected{% endif %}>270</option>
+        </select>
         <br>
         <input type="submit" value="Save Settings">
     </form>
