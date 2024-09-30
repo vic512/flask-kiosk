@@ -2,3 +2,4 @@ nextImage=6
 refreshImages=60
 imageWidth=1920
 imageHeight=1080
+rotateImages=0
