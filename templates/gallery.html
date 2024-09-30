@@ -48,6 +48,7 @@
 
         let nextImageInterval = {{ settings['nextImage'] }} * 1000; // Initialize from settings
         let refreshInterval = {{ settings['refreshImages'] }} * 1000; // Initialize from settings
+        let rotateImages = {{ settings['rotateImages'] }}; // Initialize rotation value from settings
 
         let nextImageIntervalId;
         let refreshIntervalId;
@@ -66,6 +67,7 @@
                 img.classList.remove('visible');
                 if (i === index) {
                     img.classList.add('visible');
+                    img.style.transform = `translate(-50%, -50%) rotate(${rotateImages}deg)`; // Apply rotation
                 }
             });
         }
@@ -100,7 +102,7 @@
                     img.style.position = 'absolute';
                     img.style.top = '50%';
                     img.style.left = '50%';
-                    img.style.transform = 'translate(-50%, -50%)';
+                    img.style.transform = `translate(-50%, -50%) rotate(${rotateImages}deg)`; // Apply rotation
                     gallery.appendChild(img);
                 });
 
@@ -124,6 +126,7 @@
                 // Update settings intervals
                 nextImageInterval = data.nextImage * 1000; // Convert to milliseconds
                 refreshInterval = data.refreshImages * 1000; // Convert to milliseconds
+                rotateImages = data.rotateImages; // Update rotation value
                 
                 // Clear and restart intervals with new settings
                 clearInterval(nextImageIntervalId);
