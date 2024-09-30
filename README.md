@@ -33,6 +33,6 @@ There are four settings on the upload URL page that can adjust the timings of th
 - **Gallery Refresh Interval (seconds):** This sets the interval at which the system refreshes the image list for displaying, so you do not have to refresh the browser to see the new images.
 - **Image Width (pixels):** This sets the width of image resize at upload, aspect ratio is preserved.
 - **Image Height (pixels):** This sets the height of image resize at upload, aspect ratio is preserved.
-
+- **Rotate Images (degrees):** This sets the rotation of the image. Options are 0, 90, 180, 270.
 
 [Docker Version - Preferred](https://hub.docker.com/r/cross512/flask-kiosk)
